@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="fi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kuvapaikannin</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <main class="container">
+    <header>
+      <p class="eyebrow">Paikallinen analyysi</p>
+      <h1>Kuvapaikannin</h1>
+      <p class="lead">Etsi kuvasta paikkavihjeitä metatiedoista ja näkyvästä tekstistä.</p>
+    </header>
+
+    <section class="card">
+      <form method="post" enctype="multipart/form-data">
+        <label for="image">Kuva</label>
+        <input id="image" name="image" type="file" accept="image/jpeg,image/png,image/webp,image/tiff" required>
+        <p class="hint">Kuva käsitellään vain palvelimen muistissa eikä sitä tallenneta.</p>
+        <button type="submit">Analysoi kuva</button>
+      </form>
+    </section>
+
+    {% if error %}<p class="notice error">{{ error }}</p>{% endif %}
+
+    {% if result %}
+      <section class="card results">
+        <h2>{{ result.filename }}</h2>
+        {% if result.findings %}
+          <h3>Metatiedot</h3>
+          <dl>
+          {% for finding in result.findings %}
+            <div><dt>{{ finding.title }}</dt><dd>{{ finding.value }}</dd></div>
+          {% endfor %}
+          </dl>
+        {% else %}
+          <p class="notice">Kuvasta ei löytynyt luettavia sijainti- tai kameratietoja.</p>
+        {% endif %}
+        <h3>Kuvasta tunnistettu teksti</h3>
+        <p class="ocr-text">{{ result.text or 'Tekstiä ei tunnistettu. OCR vaatii paikallisen Tesseract-asennuksen.' }}</p>
+        {% if result.map_url %}
+          <p class="actions"><a href="{{ result.map_url }}" target="_blank" rel="noopener">Hae kartalta</a><a href="{{ result.search_url }}" target="_blank" rel="noopener">Hae verkosta</a></p>
+        {% endif %}
+      </section>
+    {% endif %}
+
+    <footer>Vahvista aina paikka alkuperäisestä lähteestä. Käytä työkalua vain kuviin, joiden tutkimiseen sinulla on oikeus.</footer>
+  </main>
+</body>
+</html>
