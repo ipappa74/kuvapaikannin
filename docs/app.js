@@ -69,11 +69,20 @@ function buildOcrCanvas(source) {
   context.putImageData(image, 0, 0); return canvas;
 }
 function credibleWords(words) {
-  return (words || []).map((word) => ({ text: String(word.text || '').trim().replace(/[^\p{L}\p{N}\-./]/gu, ''), confidence: Number(word.confidence ?? 0) })).filter((word) => word.confidence >= 60 && /[\p{L}\p{N}]{2}/u.test(word.text) && word.text.length <= 40).map((word) => word.text);
+  return (words || []).map((word) => ({ text: String(word.text || '').trim().replace(/[^\p{L}\p{N}\-./]/gu, ''), confidence: Number(word.confidence ?? 0) })).filter((word) => word.confidence >= 45 && /[\p{L}\p{N}]{2}/u.test(word.text) && word.text.length <= 40).map((word) => word.text);
 }
 async function recognizeText(canvas) {
-  try { const { data } = await Tesseract.recognize(canvas, document.querySelector('#ocr-language').value, { logger: (event) => { if (event.status === 'recognizing text') setProgress(`Tunnistetaan tekstiä: ${Math.round(event.progress * 100)} %`); } }); return credibleWords(data.words).join(' '); }
-  catch (error) { console.warn('Tekstintunnistus ei onnistunut', error); return ''; }
+  let worker;
+  try {
+    worker = await Tesseract.createWorker(document.querySelector('#ocr-language').value, 1, { logger: (event) => { if (event.status === 'recognizing text') setProgress(`Tunnistetaan tekstiä: ${Math.round(event.progress * 100)} %`); } });
+    await worker.setParameters({ tessedit_pageseg_mode: Tesseract.PSM.SPARSE_TEXT, user_defined_dpi: '300' });
+    const sources = [canvas];
+    if (document.querySelector('#ocr-mode').value === 'threshold') sources.push(renderedCanvas);
+    const detected = [];
+    for (const source of sources) { const { data } = await worker.recognize(source); detected.push(...credibleWords(data.words)); }
+    return [...new Set(detected.map((word) => word.toLocaleUpperCase('fi-FI')))].join(' ');
+  } catch (error) { console.warn('Tekstintunnistus ei onnistunut', error); return ''; }
+  finally { if (worker) await worker.terminate(); }
 }
 
 preview.addEventListener('pointerdown', (event) => { if (!baseCanvas) return; dragStart = pointInCanvas(event); preview.setPointerCapture(event.pointerId); });
