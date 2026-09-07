@@ -72,7 +72,7 @@ function credibleWords(words) {
   return (words || []).map((word) => ({ text: String(word.text || '').trim().replace(/[^\p{L}\p{N}\-./]/gu, ''), confidence: Number(word.confidence ?? 0) })).filter((word) => word.confidence >= 60 && /[\p{L}\p{N}]{2}/u.test(word.text) && word.text.length <= 40).map((word) => word.text);
 }
 async function recognizeText(canvas) {
-  try { const { data } = await Tesseract.recognize(canvas, 'fin+eng', { logger: (event) => { if (event.status === 'recognizing text') setProgress(`Tunnistetaan tekstiä: ${Math.round(event.progress * 100)} %`); } }); return credibleWords(data.words).join(' '); }
+  try { const { data } = await Tesseract.recognize(canvas, document.querySelector('#ocr-language').value, { logger: (event) => { if (event.status === 'recognizing text') setProgress(`Tunnistetaan tekstiä: ${Math.round(event.progress * 100)} %`); } }); return credibleWords(data.words).join(' '); }
   catch (error) { console.warn('Tekstintunnistus ei onnistunut', error); return ''; }
 }
 
