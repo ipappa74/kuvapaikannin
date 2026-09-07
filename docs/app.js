@@ -57,8 +57,22 @@ function cropSelection() {
   baseCanvas = cropped; document.querySelector('#brightness').value = 100; document.querySelector('#contrast').value = 100; document.querySelector('#grayscale').checked = false; updateFilterLabels(); drawPreview();
 }
 function downloadImage() { const link = document.createElement('a'); link.download = 'kuvapaikannin-kasitelty.png'; link.href = renderedCanvas.toDataURL('image/png'); link.click(); }
+function buildOcrCanvas(source) {
+  const canvas = copyCanvas(source);
+  if (document.querySelector('#ocr-mode').value === 'original') return canvas;
+  const context = canvas.getContext('2d'), image = context.getImageData(0, 0, canvas.width, canvas.height), values = new Uint8Array(canvas.width * canvas.height), histogram = new Uint32Array(256);
+  for (let index = 0; index < values.length; index += 1) { const offset = index * 4; const value = Math.round(image.data[offset] * .299 + image.data[offset + 1] * .587 + image.data[offset + 2] * .114); values[index] = value; histogram[value] += 1; }
+  let weightedSum = 0; for (let value = 0; value < 256; value += 1) weightedSum += value * histogram[value];
+  let backgroundWeight = 0, backgroundSum = 0, bestVariance = 0, threshold = 145;
+  for (let value = 0; value < 256; value += 1) { backgroundWeight += histogram[value]; if (!backgroundWeight) continue; const foregroundWeight = values.length - backgroundWeight; if (!foregroundWeight) break; backgroundSum += value * histogram[value]; const variance = backgroundWeight * foregroundWeight * ((backgroundSum / backgroundWeight) - ((weightedSum - backgroundSum) / foregroundWeight)) ** 2; if (variance > bestVariance) { bestVariance = variance; threshold = value; } }
+  for (let index = 0; index < values.length; index += 1) { const offset = index * 4, color = values[index] > threshold ? 255 : 0; image.data[offset] = color; image.data[offset + 1] = color; image.data[offset + 2] = color; image.data[offset + 3] = 255; }
+  context.putImageData(image, 0, 0); return canvas;
+}
+function credibleWords(words) {
+  return (words || []).map((word) => ({ text: String(word.text || '').trim().replace(/[^\p{L}\p{N}\-./]/gu, ''), confidence: Number(word.confidence ?? 0) })).filter((word) => word.confidence >= 60 && /[\p{L}\p{N}]{2}/u.test(word.text) && word.text.length <= 40).map((word) => word.text);
+}
 async function recognizeText(canvas) {
-  try { const { data } = await Tesseract.recognize(canvas, 'fin+eng', { logger: (event) => { if (event.status === 'recognizing text') setProgress(`Tunnistetaan tekstiä: ${Math.round(event.progress * 100)} %`); } }); return data.text.replace(/\s+/g, ' ').trim(); }
+  try { const { data } = await Tesseract.recognize(canvas, 'fin+eng', { logger: (event) => { if (event.status === 'recognizing text') setProgress(`Tunnistetaan tekstiä: ${Math.round(event.progress * 100)} %`); } }); return credibleWords(data.words).join(' '); }
   catch (error) { console.warn('Tekstintunnistus ei onnistunut', error); return ''; }
 }
 
@@ -69,7 +83,7 @@ document.querySelector('#rotate-left').addEventListener('click', () => rotate(fa
 document.querySelector('#reset').addEventListener('click', () => { if (originalCanvas) { baseCanvas = copyCanvas(originalCanvas); document.querySelector('#brightness').value = 100; document.querySelector('#contrast').value = 100; document.querySelector('#grayscale').checked = false; updateFilterLabels(); drawPreview(); } });
 document.querySelector('#download').addEventListener('click', downloadImage);
 document.querySelector('#brightness').addEventListener('input', () => { updateFilterLabels(); drawPreview(); }); document.querySelector('#contrast').addEventListener('input', () => { updateFilterLabels(); drawPreview(); }); document.querySelector('#grayscale').addEventListener('change', drawPreview); manualClues.addEventListener('input', createSearchLinks);
-document.querySelector('#run-ocr').addEventListener('click', async () => { if (!renderedCanvas) return; setProgress('Valmistellaan tekstintunnistusta…'); recognizedText = await recognizeText(renderedCanvas); ocrText.textContent = recognizedText || 'Tekstiä ei tunnistettu.'; createSearchLinks(); setProgress(''); });
+document.querySelector('#run-ocr').addEventListener('click', async () => { if (!renderedCanvas) return; setProgress('Valmistellaan tekstintunnistusta…'); recognizedText = await recognizeText(buildOcrCanvas(renderedCanvas)); ocrText.textContent = recognizedText || 'Ei luotettavasti tunnistettavaa tekstiä. Rajaa vain kyltti tai tekstialue ja kokeile uudelleen.'; createSearchLinks(); setProgress(''); });
 
 imageInput.addEventListener('change', async () => {
   const [file] = imageInput.files; if (!file) return;

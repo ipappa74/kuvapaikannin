@@ -29,11 +29,12 @@
         <p class="hint">Rajaa kuva vetämällä hiirellä tai sormella kuvan päällä. Säätöjä käytetään vain omaan selainversioosi.</p>
         <div class="tool-row"><button id="rotate-left" type="button">Kierrä vasemmalle</button><button id="rotate-right" type="button">Kierrä oikealle</button><button id="crop" type="button" disabled>Rajaa valittu alue</button><button id="reset" type="button">Palauta kuva</button></div>
         <div class="sliders"><label for="brightness">Kirkkaus <output id="brightness-value">100 %</output><input id="brightness" type="range" min="50" max="170" value="100"></label><label for="contrast">Kontrasti <output id="contrast-value">100 %</output><input id="contrast" type="range" min="50" max="200" value="100"></label><label class="check" for="grayscale"><input id="grayscale" type="checkbox"> Muunna harmaasävyksi</label></div>
+        <label class="ocr-mode" for="ocr-mode">OCR-tila<select id="ocr-mode"><option value="threshold" selected>Tekstikyltti: automaattinen mustavalkoinen</option><option value="original">Koko kuva: säilytä sävyt</option></select></label>
         <div class="tool-row"><button id="run-ocr" type="button">Tunnista teksti käsitellystä kuvasta</button><button id="download" type="button">Tallenna käsitelty kuva</button><a class="button secondary" href="https://lens.google.com/" target="_blank" rel="noopener">Avaa Google Lens</a></div>
       </section>
       <p class="section-label">03 / Metatiedot</p><h3>Tekniset havainnot</h3>
       <dl id="metadata"></dl>
-      <p class="section-label">04 / Tekstitunnistus</p><h3>Kuvasta poimittu teksti</h3>
+      <p class="section-label">04 / Tekstitunnistus</p><h3>Kuvasta poimittu teksti</h3><p class="hint">Näytetään vain sanat, joiden tunnistusluottamus on vähintään 60 %.</p>
       <p id="ocr-text" class="ocr-text"></p>
       <section class="clues" aria-labelledby="clues-title"><p class="section-label">05 / Tulkitse</p><h3 id="clues-title">Omat paikkavihjeet</h3><p class="hint">Kirjaa esimerkiksi kieli, kadunnimi, liikennemerkki, yrityslogo, rakennustyyli tai maisema. Ne lisätään hakulinkkeihin.</p><textarea id="manual-clues" rows="3" placeholder="Esim. suomenkielinen kyltti, punatiilinen kirkko, talvinen kaupunkiympäristö"></textarea><details><summary>Mitä kuvasta kannattaa etsiä?</summary><ul><li>Kyltit, tienumerot ja paikannimet</li><li>Yritysten nimet ja logot</li><li>Liikennemerkit, ajosuunnat ja kieli</li><li>Maamerkit, rakennukset, kasvillisuus ja maasto</li></ul></details></section>
       <p id="actions" class="actions hidden">
