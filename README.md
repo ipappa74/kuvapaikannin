@@ -1,6 +1,10 @@
 # Kuvapaikannin
 
-Paikallisesti ajettava Flask-työkalu, joka etsii kuvasta paikkavihjeitä EXIF-metatiedoista ja tekstintunnistuksella. Ladattuja kuvia ei tallenneta levylle.
+Selainpohjainen työkalu, joka etsii kuvasta paikkavihjeitä EXIF-metatiedoista ja tekstintunnistuksella. Ladattu kuva käsitellään selaimessa eikä sitä siirretä palvelimelle.
+
+## GitHub Pages
+
+Julkaistava sivusto on `docs/`-kansiossa. Ota GitHubissa käyttöön **Settings → Pages → Deploy from a branch → main → /docs**.
 
 ## Käynnistys Windowsissa
 
@@ -13,7 +17,7 @@ flask --app app run
 
 Avaa selaimessa `http://127.0.0.1:5000`.
 
-Tekstintunnistus tarvitsee lisäksi [Tesseract OCR:n](https://github.com/UB-Mannheim/tesseract/wiki) sekä suomen ja englannin kielipaketit. Jos se puuttuu, metatietojen luku toimii silti.
+GitHub Pages -versio lataa EXIF-luvun ja tekstintunnistuksen selainkirjastoina. Ensimmäinen tekstintunnistus voi kestää hetken, koska selain lataa OCR-kieliaineiston.
 
 ## Rajaus ja yksityisyys
 

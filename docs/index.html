@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="fi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Selainpohjainen työkalu kuvan paikkavihjeiden tutkimiseen.">
+  <title>Kuvapaikannin</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <header>
+      <p class="eyebrow">Paikallinen kuva-analyysi</p>
+      <h1>Kuvapaikannin</h1>
+      <p class="lead">Etsi kuvasta paikkavihjeitä metatiedoista ja näkyvästä tekstistä. Kuva käsitellään vain omassa selaimessasi.</p>
+    </header>
+
+    <section class="card" aria-labelledby="upload-title">
+      <h2 id="upload-title">Valitse kuva</h2>
+      <label class="upload" for="image"><span>Valitse kuva laitteeltasi</span><input id="image" type="file" accept="image/jpeg,image/png,image/webp,image/tiff"></label>
+      <p class="hint">Sallitut muodot: JPG, PNG, WebP ja TIFF. Kuvaa ei siirretä palvelimelle.</p>
+    </section>
+
+    <section id="progress" class="notice hidden" aria-live="polite"></section>
+    <section id="results" class="card results hidden" aria-live="polite">
+      <h2 id="filename"></h2>
+      <div id="preview-wrap" class="preview-wrap hidden"><img id="preview" alt="Valittu kuva"></div>
+      <h3>Metatiedot</h3>
+      <dl id="metadata"></dl>
+      <h3>Kuvasta tunnistettu teksti</h3>
+      <p id="ocr-text" class="ocr-text"></p>
+      <p id="actions" class="actions hidden">
+        <a id="map-link" target="_blank" rel="noopener">Hae kartalta</a>
+        <a id="search-link" target="_blank" rel="noopener">Hae verkosta</a>
+      </p>
+    </section>
+
+    <footer>Työkalu antaa vihjeitä, ei varmistettua sijaintia. Käytä sitä vain kuviin, joiden tutkimiseen sinulla on oikeus.</footer>
+  </main>
+  <script src="https://unpkg.com/exifr/dist/lite.umd.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
