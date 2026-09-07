@@ -9,34 +9,33 @@
 </head>
 <body>
   <main class="container">
-    <header>
-      <p class="eyebrow">Paikallinen kuva-analyysi</p>
-      <h1>Kuvapaikannin</h1>
-      <p class="lead">Etsi kuvasta paikkavihjeitä metatiedoista ja näkyvästä tekstistä. Kuva käsitellään vain omassa selaimessasi.</p>
+    <header class="masthead">
+      <div><p class="eyebrow">Kuvatutkimuksen työpöytä</p><h1>Kuvapaikannin</h1><p class="lead">Muunna kuvan pienet yksityiskohdat tutkittaviksi paikkavihjeiksi.</p></div>
+      <p class="protocol">01 / Lähdeaineisto<br>02 / Kuvan käsittely<br>03 / Havainnot ja karttahaku</p>
     </header>
 
     <section class="card" aria-labelledby="upload-title">
-      <h2 id="upload-title">Valitse kuva</h2>
+      <p class="section-label">01 / Lähdeaineisto</p><h2 id="upload-title">Avaa kuva tutkittavaksi</h2>
       <label class="upload" for="image"><span>Valitse kuva laitteeltasi</span><input id="image" type="file" accept="image/jpeg,image/png,image/webp,image/tiff"></label>
       <p class="hint">Sallitut muodot: JPG, PNG, WebP ja TIFF. Kuvaa ei siirretä palvelimelle.</p>
     </section>
 
     <section id="progress" class="notice hidden" aria-live="polite"></section>
     <section id="results" class="card results hidden" aria-live="polite">
-      <h2 id="filename"></h2>
+      <p class="section-label">Kuvatiedosto</p><h2 id="filename"></h2>
       <div id="preview-wrap" class="preview-wrap hidden"><div id="canvas-holder" class="canvas-holder"><canvas id="preview" aria-label="Käsiteltävä kuva"></canvas><div id="selection" class="selection hidden" aria-hidden="true"></div></div></div>
       <section class="editor" aria-labelledby="editor-title">
-        <h3 id="editor-title">Paranna tunnistusta</h3>
+        <p class="section-label">02 / Kuvankäsittely</p><h3 id="editor-title">Tarkenna vihjeitä</h3>
         <p class="hint">Rajaa kuva vetämällä hiirellä tai sormella kuvan päällä. Säätöjä käytetään vain omaan selainversioosi.</p>
         <div class="tool-row"><button id="rotate-left" type="button">Kierrä vasemmalle</button><button id="rotate-right" type="button">Kierrä oikealle</button><button id="crop" type="button" disabled>Rajaa valittu alue</button><button id="reset" type="button">Palauta kuva</button></div>
         <div class="sliders"><label for="brightness">Kirkkaus <output id="brightness-value">100 %</output><input id="brightness" type="range" min="50" max="170" value="100"></label><label for="contrast">Kontrasti <output id="contrast-value">100 %</output><input id="contrast" type="range" min="50" max="200" value="100"></label><label class="check" for="grayscale"><input id="grayscale" type="checkbox"> Muunna harmaasävyksi</label></div>
         <div class="tool-row"><button id="run-ocr" type="button">Tunnista teksti käsitellystä kuvasta</button><button id="download" type="button">Tallenna käsitelty kuva</button><a class="button secondary" href="https://lens.google.com/" target="_blank" rel="noopener">Avaa Google Lens</a></div>
       </section>
-      <h3>Metatiedot</h3>
+      <p class="section-label">03 / Metatiedot</p><h3>Tekniset havainnot</h3>
       <dl id="metadata"></dl>
-      <h3>Kuvasta tunnistettu teksti</h3>
+      <p class="section-label">04 / Tekstitunnistus</p><h3>Kuvasta poimittu teksti</h3>
       <p id="ocr-text" class="ocr-text"></p>
-      <section class="clues" aria-labelledby="clues-title"><h3 id="clues-title">Omat paikkavihjeet</h3><p class="hint">Kirjaa esimerkiksi kieli, kadunnimi, liikennemerkki, yrityslogo, rakennustyyli tai maisema. Ne lisätään hakulinkkeihin.</p><textarea id="manual-clues" rows="3" placeholder="Esim. suomenkielinen kyltti, punatiilinen kirkko, talvinen kaupunkiympäristö"></textarea><details><summary>Mitä kuvasta kannattaa etsiä?</summary><ul><li>Kyltit, tienumerot ja paikannimet</li><li>Yritysten nimet ja logot</li><li>Liikennemerkit, ajosuunnat ja kieli</li><li>Maamerkit, rakennukset, kasvillisuus ja maasto</li></ul></details></section>
+      <section class="clues" aria-labelledby="clues-title"><p class="section-label">05 / Tulkitse</p><h3 id="clues-title">Omat paikkavihjeet</h3><p class="hint">Kirjaa esimerkiksi kieli, kadunnimi, liikennemerkki, yrityslogo, rakennustyyli tai maisema. Ne lisätään hakulinkkeihin.</p><textarea id="manual-clues" rows="3" placeholder="Esim. suomenkielinen kyltti, punatiilinen kirkko, talvinen kaupunkiympäristö"></textarea><details><summary>Mitä kuvasta kannattaa etsiä?</summary><ul><li>Kyltit, tienumerot ja paikannimet</li><li>Yritysten nimet ja logot</li><li>Liikennemerkit, ajosuunnat ja kieli</li><li>Maamerkit, rakennukset, kasvillisuus ja maasto</li></ul></details></section>
       <p id="actions" class="actions hidden">
         <a id="map-link" target="_blank" rel="noopener">Hae kartalta</a>
         <a id="search-link" target="_blank" rel="noopener">Hae verkosta</a>
